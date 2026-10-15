@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#17151c">
-    <title>Little List</title>
+    <title>To do</title>
 
     <style>
         :root {
@@ -24,12 +24,13 @@
         }
 
         body {
+            width: 400px;
+            min-height: 460px;
             margin: 0;
-            min-height: 100vh;
-            padding: 48px 20px;
+            padding: 20px;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             background:
                 radial-gradient(
                     ellipse at 50% 0%,
@@ -51,7 +52,7 @@
         .app {
             width: 100%;
             max-width: 480px;
-            padding: 30px;
+            padding: 24px;
             background: var(--panel);
             border: 1px solid var(--border);
             border-radius: 16px;
@@ -317,22 +318,6 @@
             vertical-align: middle;
         }
 
-        @media (max-width: 520px) {
-            body {
-                padding: 20px 14px;
-                align-items: flex-start;
-            }
-
-            .app {
-                margin-top: 8vh;
-                padding: 23px 20px;
-            }
-
-            h1 {
-                font-size: 27px;
-            }
-        }
-
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 transition-duration: 0.01ms !important;
@@ -386,7 +371,6 @@
         </footer>
     </main>
 
-    <script src="popup.js" defer>
-    </script>
+    <script src="popup.js" defer></script>
 </body>
 </html>
