@@ -1,0 +1,392 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#17151c">
+    <title>Little List</title>
+
+    <style>
+        :root {
+            color-scheme: dark;
+            --background: #17151c;
+            --panel: rgba(37, 32, 45, 0.82);
+            --border: #393141;
+            --purple: #b89ad7;
+            --text: #f0ebf5;
+            --muted: #93899d;
+            --row-hover: rgba(180, 150, 210, 0.055);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 48px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background:
+                radial-gradient(
+                    ellipse at 50% 0%,
+                    #292132 0%,
+                    transparent 55%
+                ),
+                var(--background);
+            color: var(--text);
+            font-family:
+                -apple-system, BlinkMacSystemFont,
+                "Segoe UI", sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        button, input {
+            font: inherit;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 480px;
+            padding: 30px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: 0 24px 70px rgba(0, 0, 0, 0.16);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .topline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 27px;
+        }
+
+        .eyebrow {
+            margin: 0 0 9px;
+            color: var(--purple);
+            font-size: 11px;
+            font-weight: 650;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 29px;
+            font-weight: 580;
+            letter-spacing: -1.2px;
+        }
+
+        .date {
+            margin: 9px 0 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .list-icon {
+            width: 43px;
+            height: 43px;
+            display: grid;
+            place-items: center;
+            border: 1px solid #4a3d57;
+            border-radius: 12px;
+            background: rgba(184, 154, 215, 0.08);
+            color: var(--purple);
+            font-size: 21px;
+        }
+
+        .add-form {
+            display: flex;
+            gap: 9px;
+            margin-bottom: 26px;
+        }
+
+        .input-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 0;
+        }
+
+        #task-input {
+            width: 100%;
+            height: 46px;
+            padding: 0 14px;
+            border: 1px solid #413747;
+            border-radius: 9px;
+            outline: none;
+            background: rgba(18, 16, 23, 0.42);
+            color: var(--text);
+            font-size: 14px;
+            transition: border-color 150ms ease,
+                        background 150ms ease;
+        }
+
+        #task-input::placeholder {
+            color: #85798e;
+        }
+
+        #task-input:focus {
+            border-color: #9276ae;
+            background: rgba(18, 16, 23, 0.65);
+        }
+
+        .add-button {
+            width: 46px;
+            height: 46px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            border: 1px solid #b49aca;
+            border-radius: 9px;
+            background: #b49aca;
+            color: #21182a;
+            font-size: 25px;
+            font-weight: 400;
+            cursor: pointer;
+            transition: background 150ms ease,
+                        border-color 150ms ease,
+                        transform 150ms ease;
+        }
+
+        .add-button:hover {
+            background: #c7b0db;
+            border-color: #c7b0db;
+        }
+
+        .add-button:active {
+            transform: scale(0.96);
+        }
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 9px;
+        }
+
+        .section-heading h2 {
+            margin: 0;
+            color: #d4cbdc;
+            font-size: 12px;
+            font-weight: 650;
+            letter-spacing: 0.5px;
+        }
+
+        .task-count {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .tasks {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .task {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 51px;
+            padding: 11px 9px;
+            margin: 0 -9px;
+            border-bottom: 1px solid rgba(174, 151, 190, 0.105);
+            border-radius: 6px;
+            transition: background 150ms ease;
+        }
+
+        .task:hover {
+            background: var(--row-hover);
+        }
+
+        .task:last-child {
+            border-bottom-color: transparent;
+        }
+
+        .task-checkbox {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            margin: 0;
+            display: grid;
+            place-items: center;
+            border: 1.5px solid #71627d;
+            border-radius: 5px;
+            background: transparent;
+            cursor: pointer;
+            transition: background 150ms ease,
+                        border-color 150ms ease;
+        }
+
+        .task-checkbox:hover {
+            border-color: var(--purple);
+        }
+
+        .task-checkbox:checked {
+            border-color: var(--purple);
+            background: var(--purple);
+        }
+
+        .task-checkbox:checked::after {
+            content: "";
+            width: 8px;
+            height: 4px;
+            border-left: 1.8px solid #261c30;
+            border-bottom: 1.8px solid #261c30;
+            transform: translateY(-1px) rotate(-45deg);
+        }
+
+        .task-checkbox:focus-visible,
+        button:focus-visible {
+            outline: 2px solid var(--purple);
+            outline-offset: 3px;
+        }
+
+        .task-text {
+            flex: 1;
+            min-width: 0;
+            overflow-wrap: anywhere;
+            color: #e6dfec;
+            font-size: 14px;
+            line-height: 1.5;
+            transition: color 150ms ease;
+        }
+
+        .task.completed .task-text {
+            color: #817889;
+            text-decoration: line-through;
+            text-decoration-color: #817889;
+        }
+
+        .empty-state {
+            padding: 30px 12px 25px;
+            text-align: center;
+        }
+
+        .empty-mark {
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            margin: 0 auto 12px;
+            border: 1px solid #42364c;
+            border-radius: 50%;
+            color: var(--purple);
+            font-size: 19px;
+        }
+
+        .empty-state p {
+            margin: 0;
+            color: #b6aabd;
+            font-size: 13px;
+        }
+
+        .empty-state .empty-subtitle {
+            margin-top: 6px;
+            color: #807589;
+            font-size: 12px;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-top: 19px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(174, 151, 190, 0.13);
+            color: #82778d;
+            font-size: 11px;
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            margin-right: 6px;
+            border-radius: 50%;
+            background: #9e83b8;
+            vertical-align: middle;
+        }
+
+        @media (max-width: 520px) {
+            body {
+                padding: 20px 14px;
+                align-items: flex-start;
+            }
+
+            .app {
+                margin-top: 8vh;
+                padding: 23px 20px;
+            }
+
+            h1 {
+                font-size: 27px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="app">
+        <header class="topline">
+            <div>
+                <p class="eyebrow">Hey! ready to conquer your day?</p>
+                <h1>To do<span style="color: var(--purple)">.</span></h1>
+            </div>
+        </header>
+
+        <form class="add-form" id="add-form">
+            <div class="input-wrap">
+                <input
+                    id="task-input"
+                    type="text"
+                    placeholder="What needs doing?"
+                    maxlength="240"
+                    autocomplete="off"
+                    aria-label="New task"
+                    required
+                >
+            </div>
+
+            <button
+                class="add-button"
+                type="submit"
+                aria-label="Add task"
+            >+</button>
+        </form>
+
+        <section aria-labelledby="tasks-heading">
+            <div class="section-heading">
+                <h2 id="tasks-heading">YOUR TASKS</h2>
+                <span class="task-count" id="task-count">0 items</span>
+            </div>
+
+            <ul class="tasks" id="tasks"></ul>
+
+            <div class="empty-state" id="empty-state" hidden></div>
+        </section>
+
+        <footer class="footer">
+            <span><span class="status-dot"></span>Saved locally</span>
+        </footer>
+    </main>
+
+    <script src="popup.js" defer>
+    </script>
+</body>
+</html>
