@@ -1,95 +1,233 @@
-        const form = document.getElementById("add-form");
-        const input = document.getElementById("task-input");
-        const list = document.getElementById("tasks");
-        const count = document.getElementById("task-count");
+const form = document.getElementById("add-form");
+const input = document.getElementById("task-input");
+const list = document.getElementById("tasks");
+const count = document.getElementById("task-count");
 
-        const STORAGE_KEY = "little-list-tasks";
-        let tasks = [];
+const STORAGE_KEY = "little-list-tasks";
+const DATE_KEY = "little-list-last-open-date";
 
-        try {
-            const saved = JSON.parse(
-                localStorage.getItem(STORAGE_KEY) || "[]"
-            );
+function getToday() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
 
-            if (
-                Array.isArray(saved) &&
-                saved.every(task =>
-                    task &&
-                    typeof task.text === "string" &&
-                    typeof task.done === "boolean"
-                )
-            ) {
-                tasks = saved;
-            }
-        } catch {
-            tasks = [];
+    return `${year}-${month}-${day}`;
+}
+
+let tasks = [];
+const today = getToday();
+
+try {
+    const lastDate = localStorage.getItem(DATE_KEY);
+
+    // Clear yesterday's tasks when a new day begins.
+    if (lastDate && lastDate !== today) {
+        localStorage.setItem(STORAGE_KEY, "[]");
+    }
+
+    localStorage.setItem(DATE_KEY, today);
+
+    // Load today's saved tasks.
+    const saved = JSON.parse(
+        localStorage.getItem(STORAGE_KEY) || "[]"
+    );
+
+    if (
+        Array.isArray(saved) &&
+        saved.every(task =>
+            task &&
+            typeof task.text === "string" &&
+            typeof task.done === "boolean"
+        )
+    ) {
+        tasks = saved;
+    }
+} catch {
+    tasks = [];
+}
+
+function saveTasks() {
+    try {
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(tasks)
+        );
+    } catch {
+        // The list still works if browser storage is unavailable.
+    }
+}
+
+function renderTasks() {
+    list.replaceChildren();
+
+    count.textContent =
+        `${tasks.length} ${tasks.length === 1 ? "item" : "items"}`;
+
+    tasks.forEach((task, index) => {
+        const row = document.createElement("li");
+        row.className = "task";
+
+        if (task.done) {
+            row.classList.add("completed");
         }
 
-        function saveTasks() {
-            try {
-                localStorage.setItem(
-                    STORAGE_KEY,
-                    JSON.stringify(tasks)
-                );
-            } catch {
-                // The list still works if browser storage is unavailable.
-            }
-        }
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.className = "task-checkbox";
+        checkbox.checked = task.done;
+        checkbox.setAttribute(
+            "aria-label",
+            `Mark ${task.text} as ${task.done ? "incomplete" : "complete"}`
+        );
 
-        function renderTasks() {
-            list.replaceChildren();
-
-            count.textContent =
-                `${tasks.length} ${tasks.length === 1 ? "item" : "items"}`;
-
-            tasks.forEach((task, index) => {
-                const row = document.createElement("li");
-                row.className = "task";
-
-                if (task.done) {
-                    row.classList.add("completed");
-                }
-
-                const checkbox = document.createElement("input");
-                checkbox.type = "checkbox";
-                checkbox.className = "task-checkbox";
-                checkbox.checked = task.done;
-                checkbox.setAttribute(
-                    "aria-label",
-                    `Mark ${task.text} as ${task.done ? "incomplete" : "complete"}`
-                );
-
-                checkbox.addEventListener("change", () => {
-                    tasks[index].done = checkbox.checked;
-                    saveTasks();
-                    renderTasks();
-                });
-
-                const label = document.createElement("span");
-                label.className = "task-text";
-                label.textContent = task.text;
-
-                row.append(checkbox, label);
-                list.appendChild(row);
-            });
-        }
-
-        form.addEventListener("submit", event => {
-            event.preventDefault();
-
-            const text = input.value.trim();
-            if (!text) return;
-
-            tasks.push({
-                text,
-                done: false
-            });
-
+        checkbox.addEventListener("change", () => {
+            tasks[index].done = checkbox.checked;
             saveTasks();
             renderTasks();
-
-            input.value = "";
-            input.focus();
         });
 
-        renderTasks();
+        const label = document.createElement("span");
+        label.className = "task-text";
+        label.textContent = task.text;
+
+        row.append(checkbox, label);
+        list.appendChild(row);
+    });
+}
+
+form.addEventListener("submit", event => {
+    event.preventDefault();
+
+    const text = input.value.trim();
+    if (!text) return;
+
+    tasks.push({
+        text,
+        done: false
+    });
+
+    saveTasks();
+    renderTasks();
+
+    input.value = "";
+    input.focus();
+});
+
+renderTasks();const form = document.getElementById("add-form");
+const input = document.getElementById("task-input");
+const list = document.getElementById("tasks");
+const count = document.getElementById("task-count");
+
+const STORAGE_KEY = "little-list-tasks";
+const DATE_KEY = "little-list-last-open-date";
+
+function getToday() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
+
+let tasks = [];
+const today = getToday();
+
+try {
+    const lastDate = localStorage.getItem(DATE_KEY);
+
+    // Clear yesterday's tasks when a new day begins.
+    if (lastDate && lastDate !== today) {
+        localStorage.setItem(STORAGE_KEY, "[]");
+    }
+
+    localStorage.setItem(DATE_KEY, today);
+
+    // Load today's saved tasks.
+    const saved = JSON.parse(
+        localStorage.getItem(STORAGE_KEY) || "[]"
+    );
+
+    if (
+        Array.isArray(saved) &&
+        saved.every(task =>
+            task &&
+            typeof task.text === "string" &&
+            typeof task.done === "boolean"
+        )
+    ) {
+        tasks = saved;
+    }
+} catch {
+    tasks = [];
+}
+
+function saveTasks() {
+    try {
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(tasks)
+        );
+    } catch {
+        // The list still works if browser storage is unavailable.
+    }
+}
+
+function renderTasks() {
+    list.replaceChildren();
+
+    count.textContent =
+        `${tasks.length} ${tasks.length === 1 ? "item" : "items"}`;
+
+    tasks.forEach((task, index) => {
+        const row = document.createElement("li");
+        row.className = "task";
+
+        if (task.done) {
+            row.classList.add("completed");
+        }
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.className = "task-checkbox";
+        checkbox.checked = task.done;
+        checkbox.setAttribute(
+            "aria-label",
+            `Mark ${task.text} as ${task.done ? "incomplete" : "complete"}`
+        );
+
+        checkbox.addEventListener("change", () => {
+            tasks[index].done = checkbox.checked;
+            saveTasks();
+            renderTasks();
+        });
+
+        const label = document.createElement("span");
+        label.className = "task-text";
+        label.textContent = task.text;
+
+        row.append(checkbox, label);
+        list.appendChild(row);
+    });
+}
+
+form.addEventListener("submit", event => {
+    event.preventDefault();
+
+    const text = input.value.trim();
+    if (!text) return;
+
+    tasks.push({
+        text,
+        done: false
+    });
+
+    saveTasks();
+    renderTasks();
+
+    input.value = "";
+    input.focus();
+});
+
+renderTasks();
